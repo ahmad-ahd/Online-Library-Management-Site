@@ -1,0 +1,271 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+  <style>
+    .account-container {
+      margin: 10px 30px 10px 30px;
+      background-color: #333;
+      padding: 40px;
+      color: #fff;
+      border-radius: 10px;
+
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .user-info {
+      text-align: center;
+      margin-bottom: 10px;
+      padding: 20px;
+      height: auto;
+    }
+
+    .hideBtn {
+      width: 100%;
+      height: 50px;
+      font-size: 26px;
+      font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    }
+
+    .userForm form {
+      padding: 20px;
+    }
+
+    .update-info-form {
+      padding: 10px;
+    }
+
+    .info-entry {
+      width: 100%;
+    }
+
+    .change-user-pass {
+      display: flex;
+      justify-content: space-around;
+      width: 100%;
+      min-height: 150px;
+      height: auto;
+    }
+
+    .change-user {
+      text-align: center;
+      padding: 10px;
+      margin: 0 5px;
+      width: 400px;
+    }
+    
+    .change-pass {
+      text-align: center;
+      padding: 10px;
+      margin: 0 5px;
+      width: 400px;
+    }
+
+    .change-pass-form {
+      padding: 10px;
+    }
+
+    .pfp {
+      margin: 20px;
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      overflow: hidden;
+    }
+
+    
+    .user-info-text {
+      font-size: 28px;
+      font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    }
+
+    .user-info-display {
+      background-color: cornflowerblue;
+      border: 3px solid black;
+      border-radius: 10px;
+      padding: 20px;
+      margin-top: 20px;
+      width: auto;
+    }
+
+
+
+    .popup {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 10px;
+      background-color: #28a745;
+      color: #fff;
+      text-align: center;
+      font-weight: bold;
+      animation: slide-down 0.5s forwards, fade-out 5s 0.2s forwards;
+      z-index: 10;
+    }
+
+    @keyframes slide-down {
+      from {
+        transform: translateY(-100%);
+      }
+      to {
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fade-out {
+      from {
+        opacity: 1;
+      }
+      to {
+        opacity: 0;
+      }
+    }
+
+  </style>
+
+
+{% if messages %}
+    <div id = "success-popup" class = "popup">
+        <script>
+            window.onload = function() {
+                {% for message in messages %}
+                    showSuccessPopup("{{ message }}");
+                {% endfor %}
+            }
+        </script>
+    </div>
+{% endif %}
+
+
+
+  <div class = "account-container">
+
+    <div class = "user-info">
+      <h2>User Profile</h2>
+      <img class = "pfp" src = "{{ user.userprofile.profile_picture.url }}">
+
+
+      <form action = "{% url 'update_profile_picture' %}" method = "POST" enctype = "multipart/form-data">
+        {% csrf_token %}
+        <input name = "profile_picture" type = "file" accept = "image/*" id = "imageInput" style = "display: none;">
+        <button type = "button" class = "btn btn-warning" onclick = "document.getElementById('imageInput').click()">Upload Image</button>
+        <button type = "submit" id = "hiddenSubmit" style = "display: none;"></button>
+      </form>
+
+
+      <div class = "user-info-display">
+
+        <p class = "user-info-text" style = "margin-top: 10px; color: coral;">Username: </p><p class = "user-info-text">{{ user.username }}</p>
+        
+        {% if user.email %}
+          <p class = "user-info-text" style = "color: coral;">Email: </p><p class = "user-info-text">{{ user.email }}</p>
+        {% else %}
+          <p class = "user-info-text" style = "color: coral;">Email: </p><p class = "user-info-text"><i>(None...)</i></p>
+        {% endif %}
+      </div>
+  
+    </div>
+
+
+    <div class = "change-user-pass">
+
+      <div class = "change-user">
+        <button onclick="toggleForm('userForm')" class = "hideBtn btn btn-primary">Update Information</button>
+        <div id="userForm" style="display: none;">
+
+          <form method="post">
+              {% csrf_token %}
+
+              <div class = "update-info-form">
+                <div class = "form-floating"  style = "margin: 5px;">
+                  <input type = "text" name = "username" class = "info-entry form-control" id = "floatingInputUsername" value = "{{ user.username }}">
+                  <label for = "floatingInputUsername" style = "color: #000;">Username</label>
+                </div>
+  
+                <div class = "form-floating"  style = "margin: 5px;">
+                  <input type = "email" name = "email" class = "info-entry form-control" id = "floatingInputEmail" value = "{{ user.email }}">
+                  <label for = "floatingInputEmail" style = "color: #000;">Email Address</label>
+                </div>
+  
+                <input type = "submit" name = "update_user_info" value = "Update" class = "btn btn-warning" style = "margin-top: 10px;">
+              </div>
+          </form>
+
+        </div>
+      </div>
+
+      <div class = "change-pass">
+        <button onclick="toggleForm('passwordForm')" class = "hideBtn btn btn-primary">Change Password</button>
+        <div id="passwordForm" style="display: none;">
+
+          <div class = "change-pass-form">
+            <form method="post" id = "passwordForm">
+              {% csrf_token %}
+  
+              <div class = "form-floating" style = "margin: 5px;">
+                <input type="password" name = "old_password" class="form-control" id="oldPassword" placeholder="Old Password" required>
+                <label for="oldPassword" style = "color: #000;">Old Password</label>
+              </div>
+  
+              <div class = "m-2 p-1 rounded border" style = "background-color: rgba(10, 163, 214, 0.658);">
+                <small class="form-text text-white">Your password can’t be too similar to your other personal information.
+                  <br>Your password must contain at least 8 characters.
+                  <br>Your password can’t be a commonly used password.
+                  <br>Your password can’t be entirely numeric.</small>
+              </div>
+  
+              <div class = "form-floating" style = "margin: 5px;">
+                <input type="password" name = "new_password1" class="form-control" id="newPassword" placeholder="New Password" required>
+                <label for="newPassword" style = "color: #000;">New Password</label>
+              </div>
+  
+              <div class = "form-floating" style = "margin: 5px;">
+                <input type="password" name = "new_password2" class="form-control" id="confirmNewPassword" placeholder="Confirm New Password" required>
+                <label for="confirmNewPassword" style = "color: #000;">Confirm New Password</label>
+              </div>
+  
+  
+              <input type = "submit" name = "change_password" value = "Change Password" class = "btn btn-warning" onclick = "showSuccessPopup()" style = "margin-top: 10px;">
+            </form>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+
+  </div>
+
+  <script>
+    function toggleForm(formId) {
+      var form = document.getElementById(formId);
+      form.style.display = (form.style.display === 'none' || form.style.display === '') ? 'block' : 'none';
+    }
+
+    document.getElementById('imageInput').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (file && file.type.startsWith('image/')) {
+          document.getElementById('hiddenSubmit').click();
+        } else {
+          alert('Please select a valid image file.');
+        }
+    });
+
+
+    function showSuccessPopup(message) {
+      var successPopup = document.getElementById("success-popup");
+      successPopup.innerHTML = message;
+      successPopup.style.display = "block";
+      setTimeout(function() {
+        successPopup.style.display = "none";
+      }, 5000);
+    }
+
+  </script>
+{% endblock %}

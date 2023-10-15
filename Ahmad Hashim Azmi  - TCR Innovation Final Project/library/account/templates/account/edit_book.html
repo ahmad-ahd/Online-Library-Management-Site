@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<style>
+    .edit-form-body {
+        background-color: #333;
+        margin: 50px auto;
+        border-radius: 10px;
+        max-width: 1600px;
+        height: auto;
+        padding: 40px;
+    }
+
+    .title {
+        color: #fff;
+        font-size: 48px;
+        margin-bottom: 40px;
+        background-color: coral;
+        text-align: center;
+        border-radius: 10px;
+        padding: 10px;
+    }
+
+
+    .form-container {
+        text-align: center;
+    }
+
+
+</style>
+
+<script>
+    window.onload = function() {
+        document.getElementById("floatingContent").value = "{{ book.content.url }}";
+        document.getElementById("floatingThumbnail").value = "{{ book.thumbnail.url }}";
+    }
+</script>
+
+
+<div class = "edit-form-body">
+    <h1 class = "title">Edit Books</h1>
+
+    <div id = "editForm" class="form-container">
+        <form method = "POST" enctype = "multipart/form-data">
+            {% csrf_token %}
+            
+            <div class = "form-floating"  style = "margin: 5px;">
+                <input type = "text" name = "title" class = "form-control" id = "floatingInput" value = "{{ book.title }}" required>
+                <label for = "floatingInput">Title</label>
+            </div>
+
+            <div class = "form-floating"  style = "margin: 5px;">
+                <input type = "text" name = "author" class = "form-control" id = "floatingInput" value = "{{ book.author }}">
+                <label for = "floatingInput">Author</label>
+            </div>
+
+            <div class = "form-floating"  style = "margin: 5px;">
+                <textarea name = "summary" class = "form-control" id = "floatingInput" style = "height: 250px;" maxlength = "500">{{ book.summary }}</textarea>
+                <label for = "floatingInput">Description (Max 500 characters)</label>
+            </div>
+
+
+
+            <div class = "form-floating" style = "margin: 15px 5px;">
+                <select name = "category" class = "form-select" id = "category" required>
+                    {% for category in categories %}
+                        {% if category.name == book.category.name %}
+                            <option value = "{{ category.pk }}" selected>{{ category.name }}</option>
+                        {% else %}
+                            <option value = "{{ category.pk }}">{{ category.name }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+                <label for = "category">Category</label>
+            </div>
+
+
+            <div class="current-file-info">
+                
+            </div>
+
+            <div class = "form-floating" style = "margin: 10px 5px;">
+                <input type = "file" name = "content" class = "form-control" id = "floatingContent" accept = ".pdf">
+                <label for = "floatingContent">Current Content: <a href="{{ book.content.url }}" target = "_blank">{{ book.content.name }}</a></label>
+                
+            </div>
+        
+            <div class = "form-floating" style = "margin: 10px 5px;">
+                <input type = "file" name = "thumbnail" class = "form-control" id = "floatingThumbnail" accept = "image/*">
+                <label for = "floatingThumbnail">Current Thumbnail: <a href="{{ book.thumbnail.url }}" target = "_blank">{{ book.thumbnail.name }}</a></label>
+            </div>
+
+
+            <button type = "submit" class = "btn btn-success" style = "margin-top: 30px; width: 200px;">Save</button>
+        
+        </form>
+
+    </div>
+
+
+</div>
+
+{% endblock %}

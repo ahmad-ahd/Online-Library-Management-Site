@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% block content %}
+
+
+<style>
+
+    .add-body {
+        background-color: #333;
+        margin: 50px auto;
+        border-radius: 10px;
+        max-width: 1600px;
+        height: auto;
+        padding: 40px;
+    }
+
+    .form-container {
+        text-align: center;
+        margin: 10px auto;
+
+        max-width: 600px;
+    }
+
+    .title {
+        color: #fff;
+        font-size: 48px;
+        margin-bottom: 40px;
+        background-color: coral;
+        text-align: center;
+        border-radius: 10px;
+        padding: 10px;
+    }
+
+</style>
+
+
+
+<!-- ADD BOOKS -->
+<div class = "add-body">
+    <h2 class = "title">Add Books</h2>
+
+    <div id="addForm" class="form-container">
+    
+        <form method = "POST" enctype = "multipart/form-data">
+            {% csrf_token %}
+            
+            <div class = "form-floating"  style = "margin: 5px;">
+                <input type = "text" name = "title" class = "form-control" id = "floatingInput" placeholder = "Title" required>
+                <label for = "floatingInput">Title</label>
+            </div>
+    
+            <div class = "form-floating"  style = "margin: 5px;">
+                <input type = "text" name = "author" class = "form-control" id = "floatingInput" placeholder = "Author">
+                <label for = "floatingInput">Author</label>
+            </div>
+    
+            <div class = "form-floating"  style = "margin: 5px;">
+                <textarea name = "summary" class = "form-control" id = "floatingInput" placeholder = "Description" style = "height: 250px;" maxlength = "500"></textarea>
+                <label for = "floatingInput">Description (Max 500 characters)</label>
+            </div>
+    
+    
+    
+            <div class="form-floating" style="margin: 15px 5px;">
+                <select name="category" class="form-select" id="category" required>
+                    <option value="" disabled selected>Select a category</option>
+                    {% for category in categories %}
+                        <option value="{{ category.pk }}">{{ category.name }}</option>
+                    {% endfor %}
+                </select>
+                <label for="category">Category</label>
+            </div>
+    
+    
+    
+            <div class = "form-floating" style = "margin: 10px 5px;">
+                <input type = "file" name = "content" class = "form-control" id = "floatingContent" accept = ".pdf">
+                <label for = "floatingContent">Upload Content (PDF)</label>
+            </div>
+        
+            <div class = "form-floating" style = "margin: 10px 5px;">
+                <input type = "file" name = "thumbnail" class = "form-control" id = "floatingThumbnail" accept = "image/*">
+                <label for = "floatingThumbnail">Upload Thumbnail (Image)</label>
+            </div>
+    
+    
+            <button type = "submit" class = "btn btn-success" style = "margin-top: 30px; margin-right: 20px;">Add Book</button>
+
+            <a href = "{% url 'manage_books' %}" class = "btn btn-danger" style = "margin-top: 30px;">Cancel</a>
+
+
+        </form>
+    
+    </div>
+</div>
+
+
+{% endblock %}

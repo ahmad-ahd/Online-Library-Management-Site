@@ -1,0 +1,158 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<style>
+    .book-body {
+        background-color: #333;
+        margin: 50px auto;
+        border-radius: 10px;
+        max-width: 1600px;
+        height: auto;
+        padding: 40px;
+    }
+    .title {
+        color: #fff;
+        font-size: 48px;
+        margin-bottom: 40px;
+        background-color: coral;
+        text-align: center;
+        border-radius: 10px;
+        padding: 10px;
+    }
+
+    .book {
+        display: flex;
+    }
+
+    .book-img img {
+        height: 400px;
+        width: auto;
+        border-radius: 10px;
+    }
+
+    .book-info {
+        display: inline-block;
+        color: #fff;
+        text-align: center;
+        margin: 20px;
+    }
+    .book-info h2 {
+        font-size: 38px;
+    }
+    .book-info h3 {
+        font-size: 20px;
+    }
+    .book-info p {
+        font-size: 28px;
+        margin: 40px 20px 20px 20px;
+    }
+
+    .options {
+        margin-top: 40px;
+        justify-content: center;
+        display: flex;
+    }
+    .options .add {
+        margin-right: 10px;
+    }
+    .options .read {
+        margin-right: 10px;
+    }
+
+
+
+    .popup {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 10px;
+      background-color: #28a745;
+      color: #fff;
+      text-align: center;
+      font-weight: bold;
+      animation: slide-down 0.5s forwards, fade-out 5s 0.2s forwards;
+      z-index: 10;
+    }
+
+    @keyframes slide-down {
+      from {
+        transform: translateY(-100%);
+      }
+      to {
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fade-out {
+      from {
+        opacity: 1;
+      }
+      to {
+        opacity: 0;
+      }
+    }
+
+</style>
+
+
+<script>
+    function showSuccessPopup(message) {
+      var successPopup = document.getElementById("success-popup");
+      successPopup.innerHTML = message;
+      successPopup.style.display = "block";
+      setTimeout(function() {
+        successPopup.style.display = "none";
+      }, 5000);
+    }
+
+</script>
+
+
+{% if messages %}
+    <div id = "success-popup" class = "popup">
+        <script>
+            window.onload = function() {
+                {% for message in messages %}
+                    showSuccessPopup("{{ message }}");
+                {% endfor %}
+            }
+        </script>
+    </div>
+{% endif %}
+
+
+<div class = "book-body">
+    <h1 class = "title">{{ book.title }}</h1>
+
+    <div class = "book">
+
+        <div class = "book-img">
+            <img src = "{{ book.thumbnail.url }}" alt = "{{ book.title }}">
+        </div>
+    
+        <div class = "book-info">
+            <h2>{{ book.title }}</h2>
+            <h3>{{ book.author }} | {{ book.category }}</h3>
+            <p>{{ book.summary }}</p>
+
+            <div class = "options">
+
+                <form action = "{% url 'add_to_my_books' book.id %}" method = "POST">
+                    {% csrf_token %}
+                    <button class = "add btn btn-primary" type = "submit">Add to My Books</button>
+                </form>
+
+                <a href = "{{ book.content.url }}" class = "read btn btn-success">Read Now!</a>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+{% endblock %}

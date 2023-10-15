@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<div style = "margin-top: 100px; margin-bottom: 100px;">
+  <div class = "form-signup w-100 m-auto text-center" style = "background-color: #333; border-radius: 10px; max-width: 600px; padding: 25px;">
+    <form method = "POST">
+        {% csrf_token %}
+
+        <img class = "mb-4" src = "{% static 'logo.png' %}">
+        <h1 class = "h3 mb-3 fw-normal text-white">Please log in</h1>
+
+        {% if form.errors %}
+            <div class = "alert alert-danger" style = "margin-top: 10px;">
+                <strong>Error:</strong><br>
+                {% for error in form.non_field_errors %}
+                    {{ error }}
+                {% endfor %}
+            </div>
+        {% endif %}
+      
+        <div class = "form-floating"  style = "margin: 5px;">
+          <input type = "username" name = "username" class = "form-control" id = "floatingInput" placeholder = "Username" required>
+          <label for = "floatingInput">Username</label>
+        </div>
+
+        <div class="form-floating" style = "margin: 5px;">
+          <input type = "password" name = "password" class = "form-control" id = "floatingPassword" placeholder = "Password" required>
+          <label for = "floatingPassword">Password</label>
+        </div>
+      
+        <div class = "m-3">
+          <a href = "{% url 'signup' %}" style = "text-decoration: none;">Don't have an account? Sign up here.</a>
+        </div>
+        <button class = "btn btn-primary w-100 py-2" type = "submit">Log in</button>
+    </form>
+</div>
+</div>
+
+{% endblock %}

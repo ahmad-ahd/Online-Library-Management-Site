@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div style = "margin-top: 100px;">
+    <form method = "POST" class = "form-signup w-100 m-auto text-center" style = "background-color: #333; border-radius: 10px; max-width: 600px; padding: 25px;">
+        {% csrf_token %}
+    
+        <h1 class = "h1 mb-5 fw-normal text-white" style = "font-family: Arial, Helvetica, sans-serif; font-size: 60px;">Suggest a book!</h1>
+    
+        {% if form.errors %}
+            <div class = "alert alert-danger" style = "margin-top: 10px;">
+                <strong>Error:</strong><br>
+                {% for error in form.non_field_errors %}
+                    {{ error }}
+                {% endfor %}
+            </div>
+        {% endif %}
+    
+        <div class = "form-floating"  style = "margin: 5px;">
+            <input type = "text" name = "title" class = "form-control" id = "floatingInput" placeholder = "Title" required>
+            <label for = "floatingInput">Title</label>
+        </div>
+    
+        <div class = "form-floating"  style = "margin: 5px;">
+            <input type = "text" name = "author" class = "form-control" id = "floatingInput" placeholder = "Author" required>
+            <label for = "floatingInput">Author</label>
+        </div>
+    
+        <div class="form-floating" style="margin: 5px;">
+            <input type = "text" name = "year_released" class = "form-control" id = "floatingInputYear" placeholder = "Year Released" pattern = "[0-9]+">
+            <label for = "floatingInputYear">Year Released</label>
+        </div>
+    
+        <div class = "form-floating" style = "margin: 5px;">
+            <textarea name = "description" class = "form-control" id = "floatingInputDescription" placeholder = "Description" rows="5" style = "resize: none;"></textarea>
+            <label for = "floatingInputDescription">Description (optional)</label>
+        </div>
+           
+        <button class = "btn btn-primary w-100 py-2 mt-3" type = "submit">Submit</button>
+    </form>
+</div>
+
+{% endblock %}

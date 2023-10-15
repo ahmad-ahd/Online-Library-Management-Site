@@ -1,0 +1,214 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<style>
+    .manage-body {
+        background-color: #333;
+        margin: 50px auto;
+        border-radius: 10px;
+        max-width: 1600px;
+        height: auto;
+        padding: 40px;
+    }
+
+    .title {
+        color: #fff;
+        font-size: 48px;
+        margin-bottom: 40px;
+        background-color: coral;
+        text-align: center;
+        border-radius: 10px;
+        padding: 10px;
+    }
+
+
+    .add-btn {
+        text-align: center;
+        margin: 20px auto;
+    }
+
+
+
+    .edit-book-search {
+        display: flex;
+        margin-bottom: 40px;
+    }
+    .edit-search-button {
+        width: 200px;
+        margin-left: 20px;
+    }
+
+    .book-list {
+        display: inline-block;
+    }
+
+    .book {
+        display: flex;
+        height: 200px;
+    }
+    .book img {
+        height: 180px;
+        width: auto;
+        border-radius: 10px;
+    }
+
+    .book-no {
+        color: #fff;
+        text-align: center;
+        margin: auto;
+        font-size: 30px;
+        width: 5%;
+    }
+
+    .book-info {
+        width: 75%;
+        padding: 20px;
+    }
+    .book-info h2 {
+        color: coral;
+    }
+    .book-info h3 {
+        font-size: 20px;
+        color: cornflowerblue;
+    }
+    .book-info p {
+        color: #fff;
+    }
+
+    .book-manage {
+        text-align: center;
+    }
+    .edit-btn {
+        margin-top: 50px;
+        margin-bottom: 15px;
+    }
+
+    .book-pic {
+        width: 20%;
+        text-align: center;
+        margin: auto;
+    }
+
+    .book a {
+        text-decoration: none;
+    }
+
+
+
+
+
+    .popup {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 10px;
+      background-color: #28a745;
+      color: #fff;
+      text-align: center;
+      font-weight: bold;
+      animation: slide-down 0.5s forwards, fade-out 5s 0.2s forwards;
+      z-index: 10;
+    }
+
+    @keyframes slide-down {
+      from {
+        transform: translateY(-100%);
+      }
+      to {
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fade-out {
+      from {
+        opacity: 1;
+      }
+      to {
+        opacity: 0;
+      }
+    }
+    
+</style>
+
+
+
+<script>
+    function showSuccessPopup(message) {
+      var successPopup = document.getElementById("success-popup");
+      successPopup.innerHTML = message;
+      successPopup.style.display = "block";
+      setTimeout(function() {
+        successPopup.style.display = "none";
+      }, 5000);
+    }
+
+</script>
+
+
+
+
+{% if messages %}
+    <div id = "success-popup" class = "popup">
+        <script>
+            window.onload = function() {
+                {% for message in messages %}
+                    showSuccessPopup("{{ message }}");
+                {% endfor %}
+            }
+        </script>
+    </div>
+{% endif %}
+
+
+
+
+
+<div class = "manage-body">
+
+    <h1 class = "title">Manage Books</h1>
+
+    <form method = "GET" action = "{% url 'manage_books' %}" class = "edit-book-search">
+        <input type = "text" name = "query" class = "form-control form-control-dark text-bg-light" placeholder = "Search for a book..." aria-label="Search">
+        <button type = "submit" class = "edit-search-button btn btn-outline-primary">Search</button>
+    </form>
+
+
+    <div class = "add-btn">
+        <a href = "{% url 'add_book' %}" class = "btn btn-primary">Add Book</a>
+
+        <a href = "{% url 'create_category' %}" class = "btn btn-primary">Manage Categories</a>
+    </div>
+
+
+    <div class = "book-list">
+        {% for book in books %}
+            <div class = "book">
+                <div class = "book-no">{{ forloop.counter }}</div>
+
+                <div class = "book-info">
+                    <h2>{{ book.title }}</h2>
+                    <h3>{{ book.author }} | {{ book.category }}</h3>
+                    <p>{{ book.summary }}</p>
+                </div>
+
+                <div class = "book-manage">
+                    <a href = "{% url 'edit_book' book.id %}" class = "edit-btn btn btn-success">Edit Book</a>
+                    <a href = "{% url 'delete_book' book.id %}" class = "btn btn-danger">Delete Book</a>
+                </div>
+
+                <div class = "book-pic">
+                    <img src = "{{ book.thumbnail.url }}" alt = "{{ book.title }}">
+                </div>
+
+            </div>
+        {% endfor %}
+    </div>
+
+    
+
+
+</div>
+
+{% endblock %}

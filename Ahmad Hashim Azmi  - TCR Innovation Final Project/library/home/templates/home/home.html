@@ -1,0 +1,195 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<head>
+    <link rel = "stylesheet" href = "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src = "https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src = "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</head>
+
+<style>
+    body {
+        background-color: #888;
+    }
+
+    .main_body {
+        background-color: #333;
+        width: 90%;
+        min-width: 350px;
+        max-width: 1400px;
+        margin: 50px auto;
+        border-radius: 10px;
+    }
+
+    .carousel-item img {
+        width: 100%;
+        height: 500px;
+        object-fit: cover;
+        position: relative;
+        border-radius: 10px;
+    }
+
+    .gradient-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(to left, rgba(51, 51, 51, 0), rgba(51, 51, 51, 0.9));
+        z-index: 1;
+    }
+
+    .carousel-caption {
+        padding-top: 30px;
+        margin: 50px auto;
+        width: 65%;
+        height: 400px;
+    }
+    .col-md-5 img {
+        width: 35%;
+    }
+
+    .book_title {
+        text-align: center;
+        font-size: 35px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .book_summary{
+        font-size: 18px;
+        font-family: Arial, Helvetica, sans-serif;
+        width: auto;
+        height: 220px;
+        max-height: 220px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+
+        margin: 20px;
+        padding: 10px;
+        word-wrap: break-word;
+    }
+
+    .book_author{
+        text-align: center;
+        font-size: 15px;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .col-md-6 {
+        padding-left: 0;
+    }
+
+
+
+
+    .category-container {
+        background-color: #333;
+        max-width: 1400px;
+        border-radius: 10px;
+        color: #fff;
+        margin: 60px auto 40px auto;
+        padding: 30px;
+        height: auto;
+    }
+
+    .category-title {
+        font-size: 40px;
+        margin-bottom: 25px;
+        background-color: coral;
+        text-align: center;
+        border-radius: 10px;
+        padding: 10px;
+    }
+
+    .category-thumbnail {
+        height: 250px;
+        margin: 15px;
+        width: auto;
+    }
+
+    .books-list {
+        display: flex;
+        overflow-x: auto;
+        overflow-y: hidden;
+    }
+
+    .books-list a {
+        text-decoration: none;
+    }
+
+    .book {
+        display: inline;
+    }
+
+    .book img {
+        border-radius: 10px;
+    }
+
+    .book-title {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #fff;
+    }
+
+
+</style>
+
+<div class = "main_body">
+    <div id = "myCarousel" class = "carousel slide" data-ride = "carousel" data-interval = "12000" data-wrap = "true">
+        <ol class = "carousel-indicators">
+            {% for carousel_book in carousel_books %}
+                <li data-target = "#myCarousel" data-slide-to = "{{ forloop.counter0 }}" {% if forloop.first %} class = "active" {% endif %}></li>
+            {% endfor %}
+        </ol>
+        <div class = "carousel-inner">
+            {% for carousel_book in carousel_books %}
+                <div class = "carousel-item {% if forloop.first %} active {% endif %}">
+                    <div class = "row">
+                        <div class = "col-12 col-md-7">
+                            <div class = "carousel-caption">
+                                <h5 class = "book_title">{{ carousel_book.title }}</h5>
+                                <p class = "book_summary">{{ carousel_book.summary }}</p>
+                                <p class = "book_author text-muted">~ {{ carousel_book.author }}</p>
+                            </div>
+                        </div>
+                        <div class = "col-12 col-md-5">
+                            <div class = "gradient-overlay"></div>
+                            <img src = "{{ carousel_book.thumbnail.url }}" alt = "{{ carousel_book.title }}" class = "d-block w-100">
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <a class = "carousel-control-prev" href = "#myCarousel" role = "button" data-slide = "prev" style = "z-index: 0;">
+            <span class = "carousel-control-prev-icon" aria-hidden = "true"></span>
+            <span class = "sr-only">Previous</span>
+        </a>
+        <a class = "carousel-control-next" href = "#myCarousel" role = "button" data-slide = "next" style = "z-index: 0;">
+            <span class = "carousel-control-next-icon" aria-hidden = "true"></span>
+            <span class = "sr-only">Next</span>
+        </a>
+    </div>
+</div>
+
+
+{% for category_data in categories_with_books %}
+    <div class="category-container">
+        <h2 class="category-title">{{ category_data.category.name }}</h2>
+        
+        <div class="books-list">
+            {% for book in category_data.books %}
+                <a href="{% url 'book' book.id %}">
+                    <div class="book">
+                        <img class="category-thumbnail" src="{{ book.thumbnail.url }}" alt="{{ book.title }}">
+                        <h5 class="book-title">{{ book.title }}</h5>
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+{% endfor %}
+
+
+
+{% endblock %}

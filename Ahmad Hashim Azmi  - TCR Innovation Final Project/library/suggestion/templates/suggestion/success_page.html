@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class = "container text-center" style = "margin-top: 100px;">
+    <h2 class = "text-white">The book you have suggested has been added to our list.</h2>
+    <h2 class = "text-white">Once we verify the book you have suggested we will notify you through your email.</h2>
+
+    <p class = "text-white">Redirecting you to the home page...</p>
+</div>
+  
+<script>
+    setTimeout(function() {
+        window.location.href = "{% url 'home' %}";
+    }, 8000);
+</script>
+
+{% endblock %}

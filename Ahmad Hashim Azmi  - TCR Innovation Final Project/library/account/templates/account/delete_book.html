@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<style>
+    .delete-body {
+        background-color: #333;
+        margin: 50px auto;
+        border-radius: 10px;
+        max-width: 1600px;
+        height: auto;
+        padding: 40px;
+    }
+
+    .title {
+        color: #fff;
+        font-size: 40px;
+        margin-bottom: 40px;
+        background-color: coral;
+        text-align: center;
+        border-radius: 10px;
+        padding: 10px;
+    }
+
+    .book {
+        display: flex;
+    }
+
+    .book-img img {
+        height: 400px;
+        width: auto;
+        border-radius: 10px;
+    }
+
+    .book-info {
+        display: inline-block;
+        color: #fff;
+        text-align: center;
+        margin: 20px;
+    }
+    .book-info h2 {
+        font-size: 38px;
+    }
+    .book-info h3 {
+        font-size: 20px;
+    }
+    .book-info p {
+        font-size: 28px;
+        margin: 40px 20px 20px 20px;
+    }
+
+    .confirm {
+        text-align: center;
+        margin-top: 50px;
+    }
+    .confirm #confirm {
+        width: 200px;
+        margin: 0px 10px;
+    }
+
+</style>
+
+
+<div class = "delete-body">
+    <h1 class = "title">Are you sure you want to delete "{{ book.title }}"?</h1>
+
+    <form method = "POST">
+        {% csrf_token %}
+
+        <div class = "book">
+
+            <div class = "book-img">
+                <img src = "{{ book.thumbnail.url }}" alt = "{{ book.title }}">
+            </div>
+        
+            <div class = "book-info">
+                <h2>{{ book.title }}</h2>
+                <h3>{{ book.author }} | {{ book.category }}</h3>
+                <p>{{ book.summary }}</p>
+    
+                <div class = "confirm">
+                    <button type = "submit" class = "btn btn-danger" id = "confirm">Delete</button>
+                    <a href = "{% url 'manage_books' %}" class = "btn btn-warning" id = "confirm">Cancel</a>
+                </div>
+    
+    
+            </div>
+    
+        </div>
+
+    </form>
+
+</div>
+
+
+
+
+{% endblock %}

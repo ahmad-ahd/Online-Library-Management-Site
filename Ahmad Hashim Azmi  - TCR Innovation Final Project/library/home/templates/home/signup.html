@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<div style = "margin-top: 100px; margin-bottom: 100px;">
+    <div class = "form-signup w-100 m-auto text-center" style = "background-color: #333; border-radius: 10px; max-width: 600px; padding: 25px;">
+        <form method = "POST">
+            {% csrf_token %}
+    
+            <img class = "mb-4" src = "{% static 'logo.png' %}">
+            <h1 class = "h3 mb-3 fw-normal text-white">Sign Up</h1>
+            
+            {% if form.errors %}
+                <div class="alert alert-danger" style="margin-top: 10px;">
+                    <strong>Error:</strong><br>
+                    {% for field, errors in form.errors.items %}
+                        {% for error in errors %}
+                            {{ field }}: {{ error }}
+                            <br>
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+            {% endif %}
+    
+            <div class = "form-floating"  style = "margin: 5px;">
+                <input type = "email" name = "email" class = "form-control" id = "floatingInputEmail" placeholder = "Email Address" required>
+                <label for = "floatingInputEmail">Email Address</label>
+            </div>
+          
+            <div class = "form-floating"  style = "margin: 5px;">
+              <input type = "text" name = "username" class = "form-control" id = "floatingInputUsername" placeholder = "Username" required>
+              <label for = "floatingInputUsername">Username</label>
+            </div>
+    
+            <div class="form-floating" style = "margin: 5px;">
+              <input type = "password" name = "password1" class = "form-control" id = "floatingPassword" placeholder = "Password" required>
+              <label for = "floatingPassword">Password</label>
+                
+              <div class = "m-2 p-1 rounded border" style = "background-color: rgba(10, 163, 214, 0.658);">
+                <small class="form-text text-white">Your password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, and one number.</small>
+              </div>
+            </div>
+    
+            <div class="form-floating" style="margin: 5px;">
+                <input type="password" name = "password2" class = "form-control" id = "confirmPassword" placeholder = "Confirm Password" required>
+                <label for="confirmPassword">Confirm Password</label>
+            </div>
+          
+            <div class = "m-3">
+              <a href = "{% url 'login' %}" style = "text-decoration: none;">Already have an account? Log in here.</a>
+            </div>
+            <button class = "btn btn-primary w-100 py-2" type = "submit">Sign in</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Function to check if password and confirm password match
+    function checkPasswordMatch() {
+        var password = document.getElementById('floatingPassword').value;
+        var confirmPassword = document.getElementById('confirmPassword').value;
+
+        if (password !== confirmPassword) {
+            document.getElementById('confirmPassword').setCustomValidity('Passwords do not match');
+        } else {
+            document.getElementById('confirmPassword').setCustomValidity('');
+        }
+    }
+
+    // Add event listener to the confirm password input
+    document.getElementById('confirmPassword').addEventListener('input', checkPasswordMatch);
+</script>
+
+{% endblock %}

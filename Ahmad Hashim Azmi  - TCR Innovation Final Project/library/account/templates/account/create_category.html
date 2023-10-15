@@ -1,0 +1,234 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<style>
+    .manage-category-body {
+        background-color: #333;
+        margin: 50px auto;
+        border-radius: 10px;
+        max-width: 1600px;
+        height: auto;
+        padding: 40px;
+        color: #fff;
+    }
+
+    .title {
+        color: #fff;
+        font-size: 48px;
+        margin-bottom: 40px;
+        background-color: coral;
+        text-align: center;
+        border-radius: 10px;
+        padding: 10px;
+    }
+
+    .create {
+        text-align: center;
+        max-width: 500px;
+        margin: 10px auto;
+    }
+
+    .create-form {
+        display: flex;
+    }
+    .create-form input {
+        margin-right: 20px;
+    }
+
+
+    .modify {
+        width: 400px;
+        margin: 50px auto 0 auto;
+    }
+    .modify h2 {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .category-holder {
+        display: flex;
+    }
+
+    .category-name {
+        flex: 2;
+        padding: 10px;
+    }
+    .edit {
+        flex: 0.5;
+        padding: 10px;
+        text-align: center;
+    }
+    .delete {
+        flex: 1;
+        padding: 10px;
+        text-align: center;
+    }
+
+
+    .edit-form {
+        margin: 50px auto;
+        text-align: center;
+        width: 400px;
+    }
+    .edit-form h2 {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    .edit-submit {
+        margin: 10px auto;
+    }
+
+
+    .back {
+        text-align: center;
+        margin-top: 40px;
+    }
+    .back a {
+        width: 300px;
+    }
+
+
+    .popup {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 10px;
+      background-color: #28a745;
+      color: #fff;
+      text-align: center;
+      font-weight: bold;
+      animation: slide-down 0.5s forwards, fade-out 5s 0.2s forwards;
+    }
+
+    @keyframes slide-down {
+      from {
+        transform: translateY(-100%);
+      }
+      to {
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fade-out {
+      from {
+        opacity: 1;
+      }
+      to {
+        opacity: 0;
+      }
+    }
+
+</style>
+
+
+<script>
+    function editCategory(categoryName, categoryId) {
+        document.getElementById('editCategoryForm').style.display = 'block';
+        document.getElementById('editName').value = categoryName;
+        document.getElementById('editCategoryId').value = categoryId;
+    }
+
+    function confirmDelete(categoryName, categoryId) {
+        var confirmation = confirm('Are you sure you want to delete ' + categoryName + '?');
+        if (confirmation) {
+            document.getElementById('submitBtn_' + categoryId).click();
+        }
+    }
+
+    function showSuccessPopup(message) {
+      var successPopup = document.getElementById("success-popup");
+      successPopup.innerHTML = message;
+      successPopup.style.display = "block";
+      setTimeout(function() {
+        successPopup.style.display = "none";
+      }, 5000);
+    }
+
+</script>
+
+
+
+
+{% if messages %}
+    <div id = "success-popup" class = "popup">
+        <script>
+            window.onload = function() {
+                {% for message in messages %}
+                    showSuccessPopup("{{ message }}");
+                {% endfor %}
+            }
+        </script>
+    </div>
+{% endif %}
+
+
+
+
+<div class = "manage-category-body">
+
+    <h1 class = "title">Manage Categories</h1>
+
+    <div class = "create">
+        <h1 style = "margin-bottom: 20px;">Create Category</h1>
+        <form method="POST" action="{% url 'create_category' %}">
+            {% csrf_token %}
+            <div class = "create-form">
+                <input type = "text" id = "name" name = "name" class = "form-control form-control-dark text-bg-light" placeholder = "New Category..." required>
+                <button type = "submit" class = "btn btn-success">Create</button>
+            </div>
+        </form>
+    </div>
+
+
+    <div class = "modify">
+        <h2>Categories</h2>
+
+        {% for category in categories %}
+            <div class = "category-holder">
+                <div class = "category-name">
+                    <h3>{{ category.name }}</h3>
+                </div>
+
+                <div class = "edit">
+                    <button class = "btn btn-primary" onclick = "editCategory('{{ category.name }}', {{ category.id }})">Edit</button>
+                </div>
+
+                <form class = "delete" action = "{% url 'delete_category' category.id %}" method = "post">
+                    {% csrf_token %}
+
+                    <button type = "submit" id = "submitBtn_{{ category.id }}" style = "display: none;"></button>
+
+                    <a class = "btn btn-danger" onclick = "confirmDelete('{{ category.name }}', '{{ category.id }}')">Delete</a>
+                </form>
+            </div>
+        {% endfor %}
+
+    </div>
+
+
+    <div class = "edit-form" id = "editCategoryForm" style = "display: none;">
+
+        <h2>Edit Category</h2>
+
+        <form method = "post" action = "{% url 'edit_category' %}">
+          {% csrf_token %}
+          <input type = "hidden" id = "editCategoryId" name = "id">
+          <label for = "editName">New Category Name:</label>
+          <input class = "edit-search form-control form-control-dark text-bg-light" type = "text" id = "editName" name = "name" required>
+          <button class = "edit-submit btn btn-success" type = "submit">Save Changes</button>
+        </form>
+
+    </div>
+
+
+    <div class = "back">
+        <a href = "{% url 'manage_books' %}" class = "btn btn-primary">Go Back</a>
+    </div>
+
+
+
+</div>
+
+{% endblock %}
